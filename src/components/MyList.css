@@ -371,3 +371,11 @@
     height: 45px;
   }
 }
+
+@media (max-width: 500px) {
+  .scroll-to-top-btn {
+    margin-left: 80vw;
+    width: 45px;
+    height: 45px;
+  }
+}
