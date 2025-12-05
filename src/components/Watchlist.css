@@ -219,3 +219,64 @@
     font-size: 1rem;
   }
 }
+
+@media (max-width: 500px) {
+  .watchlist-section {
+    border-radius: 20px;
+    height: 50vh;
+    padding-top: 0.5rem;
+  }
+
+  .section-header {
+    width: 95%;
+  }
+
+  .watchlist-grid {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 90vw;
+    display: grid;
+    grid-auto-flow: column;
+    padding: 10px 0.5rem 10px 0px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+    gap: 1rem;
+  }
+
+  .watch-card {
+    border-radius: 1rem;
+    display: grid;
+    height: 160px;
+    width: 160px;
+    padding: 5px 10px;
+  }
+
+  .watch-card img {
+    width: 100px;
+    height: 100px;
+    justify-self: center;
+  }
+  .watch-info {
+    justify-content: center;
+  }
+  .watch-info h4.movie-title {
+    margin: 0;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 11px;
+    max-height: 1.6em;
+  }
+  .watchlist-section {
+    border-radius: 20px;
+    height: 50svh;
+  }
+
+  .saves {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 100%;
+  }
+}
