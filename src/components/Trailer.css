@@ -300,3 +300,58 @@
     width: 95%;
   }
 }
+
+@media (max-width: 500px) {
+  .trailer-grid {
+    grid-auto-columns: 160px;
+    padding: 10px 0.5rem 10px 1rem;
+    width: 95vw;
+  }
+  .trailer-card {
+    height: 120px;
+    border-radius: 15px;
+  }
+
+  .trailer-info {
+    padding: 6px 12px;
+    border-radius: 0%;
+  }
+
+  .trailer-info h3 {
+    font-size: 9px;
+  }
+
+  .trailer-info p {
+    font-size: 6px;
+  }
+
+  .new-trailers {
+    height: fit-content;
+    padding: 10px 0rem;
+    border-radius: 20px;
+  }
+  .section-header {
+    width: 95%;
+  }
+
+  .drop-click {
+    font-size: 8px;
+  }
+  .sort-dropdown p {
+    font-size: 8px;
+  }
+
+  .drop-menu {
+    border-radius: 10px;
+    padding: 5px 0;
+    display: flex;
+    width: fit-content;
+    top: 25px;
+  }
+
+  .drop-menu li {
+    padding: 5px 10px;
+    font-size: 8px;
+    gap: 10px;
+  }
+}
