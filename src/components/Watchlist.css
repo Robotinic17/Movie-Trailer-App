@@ -1,0 +1,221 @@
+.watchlist-section {
+  color: var(--text-primary);
+  margin-top: 1rem;
+  background: var(--overlay-white);
+  border-radius: 40px;
+  height: 55vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding-top: 1rem;
+}
+
+.section-header {
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.watchlist-grid h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.watchlist-grid {
+  width: 90%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+  padding: 20px 0.5rem 10px 0px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+  transform: translateZ(0);
+  will-change: transform;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Webkit scrollbar */
+.watchlist-grid::-webkit-scrollbar {
+  background: var(--scrollbar-track);
+  width: 5px;
+}
+
+.watchlist-grid::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+/* Firefox scrollbar */
+@supports (scrollbar-color: auto) {
+  .watchlist-grid {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+}
+
+.watch-card {
+  position: relative;
+  display: flex;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--overlay-medium);
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+  height: 110px;
+  align-items: center;
+  padding: 5px 10px;
+  transition: all 0.3s ease;
+}
+
+.watch-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.watch-card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.watch-info {
+  bottom: 0;
+  width: 100%;
+  padding: 0.6rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.watch-info h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.saves {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.book-fav {
+  display: flex;
+  font-size: 15px;
+  gap: 10px;
+  align-items: center;
+}
+
+.book-fav i {
+  cursor: pointer;
+  color: var(--accent-red);
+}
+
+.book-fav span {
+  background: var(--overlay-white);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 3px 7px;
+  border-radius: 40px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 8px;
+  cursor: default;
+  color: var(--text-primary);
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.remove-btn:hover {
+  color: var(--text-secondary);
+}
+
+.empty-text {
+  text-align: center;
+  font-size: 20px;
+  padding: 0 2rem;
+  opacity: 1;
+  display: flex;
+  height: 90%;
+  align-items: center;
+  color: var(--text-primary);
+}
+
+.watch-info h4.movie-title {
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3em;
+  max-height: 2.6em;
+  color: var(--text-primary);
+}
+
+/* Alternative: If line-clamp still has issues, use ellipsis */
+.watch-info h4.movie-title.fallback {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Backdrop filter support check */
+@supports not (backdrop-filter: blur(12px)) {
+  .book-fav span {
+    background: var(--card-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Transform support for better performance */
+@supports (transform: translateZ(0)) {
+  .watchlist-grid {
+    transform: translateZ(0);
+  }
+}
+
+@media (max-width: 1040px) {
+  .watchlist-grid {
+    overflow-x: hidden;
+  }
+  .watch-card img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .watch-info {
+    padding: 0.2rem 0.5rem;
+  }
+  .watch-info h4 {
+    font-size: 11px;
+  }
+  .book-fav span {
+    padding: 2px 6px;
+    font-size: 6px;
+  }
+  .book-fav {
+    font-size: 12px;
+    gap: 5px;
+  }
+  .remove-btn {
+    font-size: 1rem;
+  }
+}

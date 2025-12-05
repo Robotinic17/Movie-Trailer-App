@@ -1,0 +1,229 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+.Pages-cont {
+  height: 100dvh;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+nav {
+  background: var(--glass-bg);
+  box-shadow: 2px 16px 32px rgba(0, 0, 0, 0.3),
+    inset 0px -1px 0 var(--glass-border);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  width: 75px;
+  height: fit-content;
+  border-radius: 35px;
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 0;
+  position: fixed;
+  z-index: 1000;
+}
+
+nav ul {
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0;
+  margin: 0;
+  gap: 5px;
+}
+
+/* Clean, evenly spaced round buttons */
+nav li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+  margin: 6px 0;
+}
+
+/* Active button with theme-based glow */
+nav li.active {
+  background: var(--overlay-medium);
+  border: 1px solid var(--accent-solid);
+  box-shadow: 0 0 8px 2px var(--nav-glow), 0 0 15px rgba(0, 183, 255, 0.25);
+  animation: pulse-glow 2.2s infinite;
+}
+
+nav li:hover {
+  background: var(--overlay-light);
+  transform: scale(1.1);
+  border: 1px solid var(--accent-solid);
+}
+
+nav li:active {
+  transform: scale(0.93);
+}
+
+/* Shimmer animation with theme colors */
+nav li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-solid),
+    transparent
+  );
+  opacity: 0.3;
+  transition: left 0.6s;
+}
+
+nav li:hover::before {
+  left: 100%;
+}
+
+/* Icon styling with theme colors */
+nav li i {
+  font-size: 15px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+nav li:hover i,
+nav li.active i {
+  color: var(--accent-solid);
+  transform: scale(1.1);
+}
+
+/* Pulse + Theme-based Glow */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 var(--nav-glow), 0 0 10px var(--nav-glow);
+  }
+  50% {
+    box-shadow: 0 0 10px 3px var(--nav-glow), 0 0 25px var(--nav-glow);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 183, 255, 0);
+  }
+}
+
+/* Backdrop filter fallback for older browsers */
+@supports not (backdrop-filter: blur(40px)) {
+  nav {
+    background: var(--card-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  nav li,
+  nav li::before,
+  nav li i {
+    transition: none;
+    animation: none;
+  }
+
+  nav li:hover {
+    transform: none;
+  }
+
+  nav li.active {
+    animation: none;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  nav li:hover {
+    background: transparent;
+    transform: none;
+    border: 1px solid transparent;
+  }
+
+  nav li:hover i {
+    color: var(--text-secondary);
+    transform: none;
+  }
+
+  nav li:active {
+    background: var(--overlay-medium);
+    transform: scale(0.95);
+    border: 1px solid var(--accent-solid);
+  }
+
+  nav li.active i {
+    color: var(--text-primary);
+  }
+}
+
+@media (max-width: 1040px) {
+  nav {
+    width: 70px;
+  }
+
+  nav li {
+    width: 45px;
+    height: 45px;
+  }
+
+  nav li i {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 770px) {
+  .Pages-cont {
+    position: absolute;
+    bottom: 35px;
+    height: fit-content;
+    width: 500px;
+  }
+
+  nav {
+    width: max-content;
+    padding: 5px 15px;
+  }
+
+  nav ul {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  nav li {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 500px) {
+  nav li {
+    width: 30px;
+    height: 30px;
+  }
+  nav li i {
+    font-size: 9px;
+  }
+
+  nav {
+    width: max-content;
+    padding: 2px 12px;
+  }
+}

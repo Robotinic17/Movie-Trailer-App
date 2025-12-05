@@ -1,0 +1,340 @@
+/* Auth.css - For both Login and Signup */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+.auth-container-2 {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    #0a0a0a8f 0%,
+    #1a1a2e7a 50%,
+    #16213e81 100%
+  );
+  padding: 20px;
+  width: 100%;
+
+  /* ✅ CONTAINER SCROLL */
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+/* ✅ CONTAINER SCROLLBAR STYLING */
+.auth-container::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.auth-container::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+.auth-container::-webkit-scrollbar-thumb {
+  background: var(--accent-solid);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.auth-container::-webkit-scrollbar-thumb:hover {
+  opacity: 0.7;
+  background: var(--accent-blue);
+}
+
+.auth-container::-webkit-scrollbar-thumb:active {
+  opacity: 1;
+  background: var(--accent-teal);
+}
+
+/* ✅ Firefox for container */
+.auth-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-solid) transparent;
+}
+
+.auth-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 35px 24px;
+  width: 100%;
+  max-width: 470px;
+  box-shadow: var(--glass-shadow);
+  height: fit-content;
+  overflow-y: visible;
+}
+
+.auth-title {
+  color: var(--text-primary);
+  font-size: 35px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 15px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-group {
+  position: relative;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.auth-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--accent-solid);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-btn {
+  padding: 16px;
+  background: var(--accent-gradient);
+  border: none;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  margin-top: 8px;
+  width: 100%;
+  display: block;
+}
+
+.auth-btn:hover:not(.loading) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 183, 255, 0.3);
+}
+
+.auth-btn.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--text-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: var(--error-color);
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 28px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.auth-link {
+  color: var(--accent-solid);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: rgba(0, 255, 234, 0.9);
+}
+
+/* Password input with toggle */
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: var(--text-primary);
+}
+
+.password-toggle:focus {
+  outline: none;
+  background: var(--overlay-medium);
+}
+
+/* Ensure input has enough padding for the toggle */
+.password-input .auth-input {
+  padding-right: 45px;
+}
+
+/* Auth Loading Overlay */
+.auth-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.auth-loading-overlay .spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 183, 255, 0.3);
+  border-top: 3px solid var(--accent-solid);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.auth-loading-overlay p {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(0, 183, 255, 0.5);
+}
+
+/* ✅ Smooth scrolling for container */
+.auth-container {
+  scroll-behavior: smooth;
+}
+
+/* ✅ Hide scrollbar when not scrolling */
+.auth-container:not(:hover)::-webkit-scrollbar-thumb {
+  opacity: 0.2;
+}
+
+.auth-container:hover::-webkit-scrollbar-thumb {
+  opacity: 0.4;
+}
+
+/* Backdrop filter fallback */
+@supports not (backdrop-filter: blur(20px)) {
+  .auth-card,
+  .auth-loading-overlay {
+    background: var(--card-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .auth-btn,
+  .auth-input {
+    transition: none;
+  }
+
+  .auth-btn:hover:not(.loading) {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-spinner,
+  .auth-loading-overlay .spinner {
+    animation: none;
+  }
+
+  .auth-container {
+    scroll-behavior: auto;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .auth-input {
+    border-width: 2px;
+  }
+
+  .auth-btn {
+    border: 1px solid var(--accent-solid);
+  }
+
+  .auth-container::-webkit-scrollbar-thumb {
+    background: #000000;
+    border: 1px solid #ffffff;
+  }
+}

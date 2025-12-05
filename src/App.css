@@ -1,0 +1,386 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* === DEFAULT THEME === */
+  --primary-bg: #111112;
+  --card-bg: #1c1c1e;
+  --secondary-bg: #2e2e2e;
+  --accent-orange: #ff5c00;
+  --accent-red: #ff3b30;
+  --text-primary: #ffffff;
+  --text-secondary: #cfcfcf;
+  --text-muted: #9ca3af;
+  --border-color: #333333;
+
+  /* Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  /* Accent Colors - DEFAULT */
+  --accent-gradient: linear-gradient(
+    135deg,
+    rgba(0, 183, 255, 0.8) 0%,
+    rgba(0, 255, 234, 0.7) 100%
+  );
+  --accent-solid: rgba(0, 183, 255, 0.9);
+  --accent-blue: #00b7ff;
+  --accent-teal: #00d3c2;
+
+  /* Status Colors */
+  --success-color: #4ecdc4;
+  --warning-color: #ffd700;
+  --error-color: #ff6b6b;
+  --danger-color: #e50914;
+
+  /* Component Specific */
+  --button-primary: #ffffff;
+  --button-secondary: transparent;
+  --icon-film: #ff6b6b;
+  --icon-clock: #4ecdc4;
+  --icon-heart: #ff9ff3;
+  --nav-glow: rgba(0, 183, 255, 0.5);
+
+  /* Background Overlays */
+  --overlay-dark: rgba(17, 17, 18, 0.2);
+  --overlay-light: rgba(255, 255, 255, 0.05);
+  --overlay-medium: rgba(255, 255, 255, 0.1);
+  --overlay-white: #ffffff21;
+
+  /* Text Gradients */
+  --text-gradient: linear-gradient(45deg, #fff, #aaa);
+  --text-gradient-blue: linear-gradient(135deg, #0096d1 0%, #00d3c2 100%);
+
+  /* Scrollbar */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
+}
+
+/* === THEME CLASSES - DYNAMIC BACKGROUND & ACCENTS === */
+
+/* Blue Theme */
+.theme-blue {
+  background-image: url("/src/assets/blue.jpg");
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  --accent-solid: #3b82f6;
+  --accent-blue: #3b82f6;
+  --accent-teal: #06b6d4;
+  --nav-glow: rgba(59, 130, 246, 0.5);
+}
+
+/* Green Theme */
+.theme-green {
+  background-image: url("/src/assets/green.jpg");
+  --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --accent-solid: #10b981;
+  --accent-blue: #10b981;
+  --accent-teal: #059669;
+  --nav-glow: rgba(16, 185, 129, 0.5);
+}
+
+/* Purple Theme */
+.theme-purple {
+  background-image: url("/src/assets/royal.jpg");
+  --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  --accent-solid: #8b5cf6;
+  --accent-blue: #8b5cf6;
+  --accent-teal: #7c3aed;
+  --nav-glow: rgba(139, 92, 246, 0.5);
+}
+
+/* Orange Theme */
+.theme-orange {
+  background-image: url("/src/assets/yell.jpg");
+  --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --accent-solid: #f59e0b;
+  --accent-blue: #f59e0b;
+  --accent-teal: #d97706;
+  --nav-glow: rgba(245, 158, 11, 0.5);
+}
+
+/* Pink Theme */
+.theme-pink {
+  background-image: url("/src/assets/pur.jpg");
+  --accent-gradient: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+  --accent-solid: #ec4899;
+  --accent-blue: #ec4899;
+  --accent-teal: #db2777;
+  --nav-glow: rgba(236, 72, 153, 0.5);
+}
+
+/* Red Theme */
+.theme-red {
+  background-image: url("/src/assets/Red.jpg");
+  --accent-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --accent-solid: #ef4444;
+  --accent-blue: #ef4444;
+  --accent-teal: #dc2626;
+  --nav-glow: rgba(239, 68, 68, 0.5);
+}
+
+/* === LIGHT THEME === */
+/* === LIGHT THEME === */
+.theme-light {
+  background-image: url("/src/assets/BG.jpeg");
+  /* Keep all the same variables as your default theme */
+  --primary-bg: #111112;
+  --card-bg: #1c1c1e;
+  --secondary-bg: #2e2e2e;
+  --accent-orange: #ff5c00;
+  --accent-red: #ff3b30;
+  --text-primary: #ffffff;
+  --text-secondary: #cfcfcf;
+  --text-muted: #9ca3af;
+  --border-color: #333333;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --accent-gradient: linear-gradient(
+    135deg,
+    rgba(0, 183, 255, 0.8) 0%,
+    rgba(0, 255, 234, 0.7) 100%
+  );
+  --accent-solid: rgba(0, 183, 255, 0.9);
+  --accent-blue: #00b7ff;
+  --accent-teal: #00d3c2;
+  --success-color: #4ecdc4;
+  --warning-color: #ffd700;
+  --error-color: #ff6b6b;
+  --danger-color: #e50914;
+  --button-primary: #ffffff;
+  --button-secondary: transparent;
+  --icon-film: #ff6b6b;
+  --icon-clock: #4ecdc4;
+  --icon-heart: #ff9ff3;
+  --nav-glow: rgba(0, 183, 255, 0.5);
+  --overlay-dark: rgba(17, 17, 18, 0.2);
+  --overlay-light: rgba(255, 255, 255, 0.05);
+  --overlay-medium: rgba(255, 255, 255, 0.1);
+  --overlay-white: #ffffff21;
+  --text-gradient: linear-gradient(45deg, #fff, #aaa);
+  --text-gradient-blue: linear-gradient(135deg, #0096d1 0%, #00d3c2 100%);
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
+}
+
+/* === BODY STYLES === */
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(
+    135deg,
+    var(--card-bg) 0%,
+    var(--secondary-bg) 100%
+  );
+  background-image: url("/src/assets/ghost.jpg"); /* Default background */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background-image 0.5s ease, background-color 0.5s ease;
+}
+
+body::before {
+  content: "";
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: inherit;
+  height: inherit;
+  z-index: 0;
+  backdrop-filter: blur(30px);
+  position: fixed;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-dark);
+  z-index: 0;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 10% 90%;
+  align-items: center;
+}
+
+main {
+  width: 90vw;
+  height: 100vh;
+  overflow: hidden;
+  backdrop-filter: blur(30px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  justify-items: center;
+  border-radius: 60px 0 0 60px;
+}
+
+main::-webkit-scrollbar {
+  background: var(--scrollbar-track);
+  height: 0px;
+  width: 0px;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+/* Movie-Themed Loading Screen - Glassmorphism Version */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+/* Glassmorphism Spinner Container */
+.spinner-container {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Film Reel Spinner with Your Accent */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(0, 183, 255, 0.3);
+  border-top: 4px solid var(--accent-solid);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Film reel holes with your accent gradient */
+.spinner::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--accent-solid);
+  border-radius: 50%;
+  box-shadow: 0 20px 0 var(--accent-solid), 0 40px 0 var(--accent-solid);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Text with Your Typography */
+.loading-screen p {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 15px;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 183, 255, 0.5);
+}
+
+/* Accent Gradient Pulse Effect */
+.spinner-container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--accent-gradient);
+  opacity: 0.1;
+  animation: pulse 3s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.2;
+  }
+}
+
+/* Movie Icon with Your Accent */
+.loading-screen::before {
+  content: "🎬";
+  font-size: 2rem;
+  position: absolute;
+  top: 20%;
+  animation: bounce 2s infinite;
+  filter: drop-shadow(0 0 10px rgba(0, 183, 255, 0.5));
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Film grain texture */
+.loading-screen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 770px) {
+  .app {
+    display: flex;
+    justify-content: center;
+  }
+
+  main {
+    width: 100vw;
+
+    border-radius: 20px 0 0 20px;
+  }
+}

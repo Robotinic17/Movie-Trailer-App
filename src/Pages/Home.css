@@ -1,0 +1,97 @@
+.main-sec {
+  width: 100%;
+  height: 80%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  gap: 2rem;
+  display: grid;
+  padding: 0rem 2rem;
+  padding-bottom: 2rem;
+  transform: translateZ(0);
+  will-change: transform;
+  overflow-anchor: none;
+  background: var(--overlay-white);
+  border-radius: 40px 0px 0px 40px;
+}
+
+/* === MINIMAL FLOATING SCROLLBAR - MOVIE THEMED === */
+.main-sec::-webkit-scrollbar {
+  width: 8px;
+  background: transparent; /* No background track */
+  height: 0px;
+}
+
+.main-sec::-webkit-scrollbar-track {
+  background: transparent; /* Completely transparent */
+  margin: 5px 0;
+}
+
+.main-sec::-webkit-scrollbar-thumb {
+  background: var(--accent-gradient); /* Your beautiful gradient */
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  box-shadow: 0 0 8px var(--nav-glow), inset 0 0 6px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  min-height: 40px; /* Ensure it's always visible */
+}
+
+.main-sec::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-solid);
+  box-shadow: 0 0 12px var(--nav-glow), inset 0 0 8px rgba(255, 255, 255, 0.3);
+  transform: scaleX(1.1); /* Slight width increase on hover */
+}
+
+.main-sec::-webkit-scrollbar-thumb:active {
+  background: var(--accent-teal);
+  box-shadow: 0 0 15px var(--nav-glow), inset 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+/* === SCROLLBAR BUTTONS (UP/DOWN ARROWS) === */
+.main-sec::-webkit-scrollbar-button {
+  display: none; /* Hide the up/down buttons */
+}
+
+/* === FIREFOX SUPPORT === */
+.main-sec {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-solid) transparent; /* Thumb color with transparent track */
+}
+
+/* === SMOOTH SCROLLING === */
+.main-sec {
+  scroll-behavior: smooth;
+}
+.content-grid {
+  display: grid;
+  width: 100%;
+  gap: 5%;
+  grid-template-columns: 30% 65%;
+}
+
+@media (max-width: 1040px) {
+  .main-sec {
+    padding: 0rem 1rem;
+  }
+  .content-grid {
+    gap: 4%;
+    grid-template-columns: 31% 65%;
+  }
+}
+
+@media (max-width: 770px) {
+  .content-grid {
+    display: flex;
+    width: 95%;
+    gap: 5%;
+    flex-direction: column-reverse;
+  }
+
+  .main-sec {
+    padding: 0rem;
+    padding-bottom: 2rem;
+    height: 75%;
+    background: none;
+    justify-items: center;
+    border-radius: 40px 0px 0px 40px;
+  }
+}

@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
+.fav-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 2.8rem;
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--text-primary);
+  cursor: default;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px var(--accent-solid);
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  text-shadow: 0 0 12px var(--accent-solid), 0 0 20px var(--nav-glow);
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav li:hover {
+  color: var(--text-primary);
+}
+
+/* Hover underline with theme colors */
+.nav li::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -6px;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 10px var(--nav-glow);
+  transition: width 0.3s ease;
+}
+
+.nav li:hover::after {
+  width: 100%;
+}
+
+/* Active link effect with theme colors */
+.nav li.active {
+  color: var(--accent-solid);
+  font-weight: 600;
+}
+
+.nav li.active::after {
+  width: 100%;
+  background: var(--accent-solid);
+  box-shadow: 0 0 10px var(--nav-glow), 0 0 20px var(--nav-glow);
+  animation: pulse-accent 2s infinite;
+}
+
+/* Pulse animation for active links */
+@keyframes pulse-accent {
+  0%,
+  100% {
+    box-shadow: 0 0 10px var(--nav-glow), 0 0 20px var(--nav-glow);
+  }
+  50% {
+    box-shadow: 0 0 15px var(--nav-glow), 0 0 30px var(--nav-glow);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .nav li,
+  .nav li::after,
+  .logo {
+    transition: none;
+    animation: none;
+  }
+
+  .nav li:hover::after {
+    width: 0%;
+  }
+
+  .nav li.active::after {
+    width: 100%;
+    animation: none;
+  }
+
+  .logo:hover {
+    text-shadow: 0 0 8px var(--accent-solid);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .logo {
+    text-shadow: 0 0 4px var(--accent-solid);
+  }
+
+  .nav li::after {
+    height: 3px;
+    background: var(--accent-solid);
+  }
+
+  .nav li.active {
+    color: var(--accent-solid);
+    text-decoration: underline;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .fav-header {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 2.2rem;
+  }
+
+  .nav ul {
+    gap: 20px;
+  }
+
+  .nav li {
+    font-size: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .fav-header {
+    position: static;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom: 1px solid #000;
+  }
+
+  .logo {
+    text-shadow: none;
+    color: #000;
+  }
+
+  .nav li::after {
+    display: none;
+  }
+
+  .nav li {
+    color: #000;
+  }
+
+  .nav li.active {
+    color: #000;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 1040px) {
+  .logo {
+    font-size: 2.3rem;
+  }
+
+  .nav li {
+    font-size: 13px;
+  }
+}
