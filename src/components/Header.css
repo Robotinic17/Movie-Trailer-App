@@ -503,9 +503,10 @@ li.active {
     top: 0rem;
     right: 2rem;
     width: 55%;
+    align-self: anchor-center;
     border-radius: 20px;
     max-width: 320px;
-    height: calc(100% - 4rem);
+    height: fit-content;
     background: rgba(28, 28, 30, 0.97);
     border-left: 1px solid var(--glass-border);
     padding: 15px;
