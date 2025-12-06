@@ -311,6 +311,10 @@
     display: flex;
   }
 
+  .logo {
+    font-size: 2rem;
+  }
+
   .nav ul {
     display: none !important;
   }
