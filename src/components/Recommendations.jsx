@@ -12,9 +12,9 @@ export const Recommendations = ({ onMovieClick }) => {
   const [error, setError] = useState("");
 
   // ✅ ADDED: Handle movie click
-  const handleMovieClick = (movieId) => {
+  const handleMovieClick = (movieId, mediaType) => {
     if (onMovieClick) {
-      onMovieClick(movieId);
+      onMovieClick(movieId, mediaType || "movie"); // ✅ Pass media type
     }
   };
 
@@ -168,8 +168,12 @@ export const Recommendations = ({ onMovieClick }) => {
                 scale: 1.03,
                 boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
               }}
-              onClick={() => handleMovieClick(movie.id)} // ✅ Added click handler
-              style={{ cursor: "pointer" }} // ✅ Added cursor pointer
+              onClick={() => {
+                // ✅ FIXED: Determine media type from the movie object
+                const mediaType = movie.title ? "movie" : "tv";
+                handleMovieClick(movie.id, mediaType);
+              }}
+              style={{ cursor: "pointer" }}
             >
               <img
                 className="recommendation-poster"

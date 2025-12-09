@@ -268,14 +268,8 @@ export const Search = ({
                           transition={{ delay: index * 0.05 }}
                           whileHover={{ y: -6, scale: 1.02 }}
                           onClick={() => {
-                            console.log("🎬 CLICKED:");
-                            console.log("item.id:", item.id);
-                            console.log("item.media_type:", item.media_type);
-                            console.log("item.title:", item.title || item.name);
-                            console.log("Full item:", item);
-
                             if (onMovieClick) {
-                              onMovieClick(item.id);
+                              onMovieClick(item.id, item.media_type);
                             }
                           }}
                           style={{ cursor: "pointer" }}

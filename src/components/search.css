@@ -175,14 +175,14 @@
   margin: 0;
   color: var(--text-primary);
   display: -webkit-box;
+  -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.3;
-  display: flex;
   min-height: 2.6em;
-  align-items: center;
+  /* Remove the second display: flex and align-items */
 }
 .search-movie-info p {
   margin: 0;

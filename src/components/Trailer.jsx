@@ -1,7 +1,7 @@
 import "./Trailer.css";
 import { useState, useEffect } from "react";
 import { fetchFromTMDB } from "../api/tmdb";
-import { auth } from "../firebase/config"; // ✅ ADD THIS IMPORT
+import { auth } from "../firebase/config";
 
 export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
   const [open, setOpen] = useState(false);
@@ -9,6 +9,7 @@ export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
   const [trailers, setTrailers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [movieMediaTypes, setMovieMediaTypes] = useState({});
 
   // Fetch trailers based on active category
   useEffect(() => {
@@ -18,25 +19,29 @@ export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
 
       try {
         let endpoint = "";
+        let mediaType = "movie"; // ✅ Default media type
 
-        // Determine endpoint based on active category
-        if (activeCategory === "TV Series") endpoint = "/trending/tv/week";
-        else if (activeCategory === "Animation")
+        if (activeCategory === "TV Series") {
+          endpoint = "/trending/tv/week";
+          mediaType = "tv"; // ✅ Set to tv
+        } else if (activeCategory === "Animation") {
           endpoint = "/discover/movie?with_genres=16";
-        else if (activeCategory === "Mystery")
+        } else if (activeCategory === "Mystery") {
           endpoint = "/discover/movie?with_genres=9648";
-        else if (activeCategory === "K-Drama")
+        } else if (activeCategory === "K-Drama") {
           endpoint = "/discover/tv?with_origin_country=KR";
-        else endpoint = "/trending/movie/week"; // Default to Movies
+          mediaType = "tv"; // ✅ Set to tv
+        } else {
+          endpoint = "/trending/movie/week";
+        }
 
-        // ✅ GET USER ADULT CONTENT PREFERENCE
         const currentUser = auth.currentUser;
         const userPreferences = JSON.parse(
           localStorage.getItem(`userPreferences_${currentUser?.uid}`)
         ) || { adultContent: false };
 
         const data = await fetchFromTMDB(endpoint, {
-          includeAdult: userPreferences.adultContent, // ✅ PASS PREFERENCE
+          includeAdult: userPreferences.adultContent,
         });
 
         if (data && data.results) {
@@ -49,9 +54,17 @@ export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
               : item.poster_path
               ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
               : "/fallback-image.jpg",
+            mediaType: item.media_type || mediaType, // ✅ Use item's media_type or default
           }));
 
           setTrailers(formattedTrailers);
+
+          // ✅ Store media types in state
+          const types = {};
+          formattedTrailers.forEach((t) => {
+            types[t.id] = t.mediaType;
+          });
+          setMovieMediaTypes(types);
         } else {
           setError("No data received");
         }
@@ -65,7 +78,6 @@ export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
 
     fetchTrailers();
   }, [activeCategory, selected]);
-
   // Simple genre mapping
   const getGenres = (genreIds) => {
     const genreMap = {
@@ -112,7 +124,8 @@ export const Trailer = ({ activeCategory = "Movies", onMovieClick }) => {
   // Handle movie click
   const handleTrailerClick = (movieId) => {
     if (onMovieClick) {
-      onMovieClick(movieId);
+      const mediaType = movieMediaTypes[movieId] || "movie"; // ✅ Get stored media type
+      onMovieClick(movieId, mediaType);
     }
   };
 

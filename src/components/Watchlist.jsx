@@ -7,9 +7,9 @@ export const Watchlist = ({ onMovieClick }) => {
   const { watchlist, removeFromWatchlist } = useWatchlist();
 
   // ✅ ADDED: Handle movie click
-  const handleMovieClick = (movieId) => {
+  const handleMovieClick = (movieId, mediaType) => {
     if (onMovieClick) {
-      onMovieClick(movieId);
+      onMovieClick(movieId, mediaType || "movie"); // ✅ Pass media type
     }
   };
 
@@ -25,8 +25,8 @@ export const Watchlist = ({ onMovieClick }) => {
             <div
               className="watch-card"
               key={movie.id}
-              onClick={() => handleMovieClick(movie.movieId)} // ✅ Added click handler
-              style={{ cursor: "pointer" }} // ✅ Added cursor pointer
+              onClick={() => handleMovieClick(movie.movieId, movie.type)} // ✅ Pass movie.type
+              style={{ cursor: "pointer" }}
             >
               <img
                 src={

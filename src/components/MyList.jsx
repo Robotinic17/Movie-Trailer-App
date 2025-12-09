@@ -12,17 +12,17 @@ export const MyList = ({ onMovieClick }) => {
   const { watchlist, removeFromWatchlist } = useWatchlist();
   const { favorites, removeFromFavorites } = useFavorites();
 
-  // Handle movie click for poster
-  const handleMovieClick = (movieId) => {
+  // ✅ FIXED: Handle movie click with media type
+  const handleMovieClick = (movieId, mediaType) => {
     if (onMovieClick) {
-      onMovieClick(movieId);
+      onMovieClick(movieId, mediaType || "movie");
     }
   };
 
-  // Handle watch trailer (same as movie click for now)
-  const handleWatchTrailer = (movieId) => {
+  // ✅ FIXED: Handle watch trailer with media type
+  const handleWatchTrailer = (movieId, mediaType) => {
     if (onMovieClick) {
-      onMovieClick(movieId);
+      onMovieClick(movieId, mediaType || "movie");
     }
   };
 
@@ -191,6 +191,7 @@ export const MyList = ({ onMovieClick }) => {
                 boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
               }}
             >
+              {/* ✅ FIXED: Pass movie.type to handleMovieClick */}
               <img
                 src={
                   movie.backdrop_path
@@ -199,7 +200,7 @@ export const MyList = ({ onMovieClick }) => {
                 }
                 alt={movie.title}
                 className="movie-poster"
-                onClick={() => handleMovieClick(movie.movieId)}
+                onClick={() => handleMovieClick(movie.movieId, movie.type)}
                 style={{ cursor: "pointer" }}
                 onError={(e) => {
                   e.target.src =
@@ -212,9 +213,12 @@ export const MyList = ({ onMovieClick }) => {
                   {movie.year} • {movie.type || "Movie"}
                 </p>
                 <div className="movie-actions">
+                  {/* ✅ FIXED: Pass movie.type to handleWatchTrailer */}
                   <button
                     className="btn btn-watch"
-                    onClick={() => handleWatchTrailer(movie.movieId)}
+                    onClick={() =>
+                      handleWatchTrailer(movie.movieId, movie.type)
+                    }
                   >
                     Watch Trailer
                   </button>
