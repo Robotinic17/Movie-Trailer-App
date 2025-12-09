@@ -27,7 +27,7 @@ const ImageWithFallback = ({
           animate={{
             rotate: [0, -5, 5, -5, 0],
           }}
-          transition={{ duration: 2, replace: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           <i className="fa-solid fa-film"></i>
         </motion.div>
@@ -79,28 +79,45 @@ export const Search = ({
   ];
 
   useEffect(() => {
+    // ✅ FIXED: AbortController to cancel previous requests
+    const controller = new AbortController();
+
     const searchMovies = async () => {
       if (searchQuery.trim().length > 0) {
         setIsLoading(true);
         setHasSearched(true);
 
         try {
-          // ✅ FIXED: Get current user safely
           const currentUser = auth.currentUser;
           const userPreferences = JSON.parse(
             localStorage.getItem(`userPreferences_${currentUser?.uid}`)
           ) || { adultContent: false };
 
+          // ✅ FIXED: Pass abort signal to API call
           const data = await fetchFromTMDB(
             `/search/multi?query=${encodeURIComponent(searchQuery)}`,
-            { includeAdult: userPreferences.adultContent }
+            {
+              includeAdult: userPreferences.adultContent,
+              signal: controller.signal,
+            }
           );
-          setSearchResults(data?.results || []);
+
+          // ✅ Only update if request wasn't aborted
+          if (!controller.signal.aborted) {
+            setSearchResults(data?.results || []);
+          }
         } catch (error) {
-          console.error("Search error:", error);
-          setSearchResults([]);
+          // ✅ Ignore AbortError (expected when cancelling)
+          if (error.name !== "AbortError") {
+            console.error("Search error:", error);
+            if (!controller.signal.aborted) {
+              setSearchResults([]);
+            }
+          }
         } finally {
-          setIsLoading(false);
+          if (!controller.signal.aborted) {
+            setIsLoading(false);
+          }
         }
       } else {
         setSearchResults([]);
@@ -109,7 +126,12 @@ export const Search = ({
     };
 
     const timeoutId = setTimeout(searchMovies, 500);
-    return () => clearTimeout(timeoutId);
+
+    // ✅ FIXED: Cleanup cancels both timeout and in-flight request
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [searchQuery]);
 
   const formatMovieData = (item) => {
@@ -163,7 +185,7 @@ export const Search = ({
           <motion.i
             className="fa-solid fa-chevron-left"
             animate={{ x: [0, -3, 0] }}
-            transition={{ duration: 2, replace: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
           <div className="search-button-shine"></div>
         </motion.button>
@@ -222,7 +244,7 @@ export const Search = ({
                     animate={{ rotate: 360 }}
                     transition={{
                       duration: 1,
-                      replace: Infinity,
+                      repeat: Infinity,
                       ease: "linear",
                     }}
                   >
@@ -246,6 +268,12 @@ export const Search = ({
                           transition={{ delay: index * 0.05 }}
                           whileHover={{ y: -6, scale: 1.02 }}
                           onClick={() => {
+                            console.log("🎬 CLICKED:");
+                            console.log("item.id:", item.id);
+                            console.log("item.media_type:", item.media_type);
+                            console.log("item.title:", item.title || item.name);
+                            console.log("Full item:", item);
+
                             if (onMovieClick) {
                               onMovieClick(item.id);
                             }

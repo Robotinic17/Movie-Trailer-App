@@ -18,6 +18,7 @@ export const Home = ({ activeCategory, setActiveCategory, user }) => {
   // Movie Details States
   const [isMovieDetailsActive, setIsMovieDetailsActive] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [selectedMediaType, setSelectedMediaType] = useState("movie"); // ✅ NEW STATE
 
   // Remove duplicate movies function
   const removeDuplicateMovies = (movies) => {
@@ -57,10 +58,11 @@ export const Home = ({ activeCategory, setActiveCategory, user }) => {
     setSearchQuery("");
   };
 
-  // Handle movie clicks from search and other components
-  const handleMovieClick = (movieId) => {
+  // ✅ FIXED: Handle movie clicks from search and other components
+  const handleMovieClick = (movieId, mediaType = "movie") => {
     setIsSearchActive(false);
     setSelectedMovieId(movieId);
+    setSelectedMediaType(mediaType); // ✅ Store media type
     setIsMovieDetailsActive(true);
   };
 
@@ -68,6 +70,7 @@ export const Home = ({ activeCategory, setActiveCategory, user }) => {
   const handleBackFromMovieDetails = () => {
     setIsMovieDetailsActive(false);
     setSelectedMovieId(null);
+    setSelectedMediaType("movie"); // ✅ Reset media type
   };
 
   return (
@@ -107,6 +110,7 @@ export const Home = ({ activeCategory, setActiveCategory, user }) => {
           <MovieDetails
             onBack={handleBackFromMovieDetails}
             movieId={selectedMovieId}
+            mediaType={selectedMediaType} // ✅ PASS MEDIA TYPE
           />
         ) : (
           <motion.section

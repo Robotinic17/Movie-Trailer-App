@@ -746,3 +746,36 @@
     font-size: 0.8rem;
   }
 }
+
+@media (max-width: 500px) {
+  .movie-details-back-button {
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
+  .movie-details-hero-content {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    gap: 30px;
+    width: 100%;
+    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+    flex-direction: column;
+  }
+
+  .movie-details-hero {
+    position: relative;
+    height: 7rem;
+    overflow: visible;
+    margin-top: 10rem;
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: flex-end;
+  }
+}

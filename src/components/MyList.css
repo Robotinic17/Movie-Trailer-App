@@ -377,11 +377,6 @@
     height: 45px;
   }
 
-  .main-sec-1 {
-    height: 75%;
-    padding: 0rem 0.5rem;
-  }
-
   .sort-filter {
     flex-direction: column;
     align-items: flex-start;

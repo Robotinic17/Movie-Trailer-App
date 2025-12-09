@@ -239,3 +239,19 @@
     height: 45px;
   }
 }
+
+@media (max-width: 500px) {
+  .recommendations-header h2 {
+    font-size: 25px;
+  }
+
+  .recommendations-header p {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+  .back-to-top-btn {
+    margin-left: 75vw;
+    width: 45px;
+    height: 45px;
+  }
+}

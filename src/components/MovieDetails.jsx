@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import "./MovieDetails.css";
 import { useWatchlist } from "../context/WatchlistContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { searchFullMovies } from "../api/youtube"; // ✅ ADD THIS IMPORT
+import { searchFullMovies } from "../api/youtube";
 
-export const MovieDetails = ({ onBack, movieId }) => {
+export const MovieDetails = ({ onBack, movieId, mediaType = "movie" }) => {
   const [movieData, setMovieData] = useState(null);
   const [trailers, setTrailers] = useState([]);
   const [cast, setCast] = useState([]);
@@ -13,27 +13,22 @@ export const MovieDetails = ({ onBack, movieId }) => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("about");
 
-  // ✅ NEW STATES FOR WATCH TAB
   const [fullMovies, setFullMovies] = useState([]);
   const [selectedFullMovie, setSelectedFullMovie] = useState(null);
   const [loadingFullMovies, setLoadingFullMovies] = useState(false);
 
-  // Local state for visual toggles
   const [localWatchlist, setLocalWatchlist] = useState(false);
   const [localFavorites, setLocalFavorites] = useState(false);
 
-  // Get watchlist and favorites context with safety defaults
   const watchlistContext = useWatchlist();
   const favoritesContext = useFavorites();
 
   const watchlist = watchlistContext?.watchlist || [];
   const favorites = favoritesContext?.favorites || [];
 
-  // Check if movie is already saved with safety checks
   const isInWatchlist = watchlist.some((item) => item.movieId === movieId);
   const isInFavorites = favorites.some((item) => item.movieId === movieId);
 
-  // Initialize local state with real data
   useEffect(() => {
     if (movieData) {
       setLocalWatchlist(isInWatchlist);
@@ -41,30 +36,43 @@ export const MovieDetails = ({ onBack, movieId }) => {
     }
   }, [movieData, isInWatchlist, isInFavorites]);
 
-  // ✅ NEW: FETCH FULL MOVIES WHEN WATCH TAB IS ACTIVE
+  // Fetch full movies when watch tab is active
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchFullMovies = async () => {
       if (activeTab === "watch" && movieData && fullMovies.length === 0) {
         setLoadingFullMovies(true);
         try {
-          const year = movieData.release_date?.split("-")[0];
-          const movies = await searchFullMovies(movieData.title, year);
-          setFullMovies(movies);
-          if (movies.length > 0) {
-            setSelectedFullMovie(movies[0]);
+          const year =
+            movieData.release_date?.split("-")[0] ||
+            movieData.first_air_date?.split("-")[0];
+          const title = movieData.title || movieData.name;
+          const movies = await searchFullMovies(title, year, controller.signal);
+
+          if (!controller.signal.aborted) {
+            setFullMovies(movies);
+            if (movies.length > 0) {
+              setSelectedFullMovie(movies[0]);
+            }
           }
         } catch (error) {
-          console.error("Error fetching full movies:", error);
+          if (error.name !== "AbortError") {
+            console.error("Error fetching full movies:", error);
+          }
         } finally {
-          setLoadingFullMovies(false);
+          if (!controller.signal.aborted) {
+            setLoadingFullMovies(false);
+          }
         }
       }
     };
 
     fetchFullMovies();
+
+    return () => controller.abort();
   }, [activeTab, movieData, fullMovies.length]);
 
-  // Simple toggle functions
   const handleWatchlistToggle = () => {
     setLocalWatchlist(!localWatchlist);
   };
@@ -73,50 +81,57 @@ export const MovieDetails = ({ onBack, movieId }) => {
     setLocalFavorites(!localFavorites);
   };
 
-  // Simple scroll to trailers section
   const handleWatchTrailer = () => {
     setActiveTab("trailers");
   };
 
-  // Fetch movie details, trailers, and cast
+  // ✅ FIXED: Fetch movie details with correct endpoint based on mediaType
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchMovieData = async () => {
       if (!movieId) return;
 
+      // Clear old data immediately
+      setMovieData(null);
+      setTrailers([]);
+      setCast([]);
+      setSelectedTrailer(null);
+      setFullMovies([]);
+      setSelectedFullMovie(null);
+      setActiveTab("about");
+
       setLoading(true);
+
       try {
-        // Try movie endpoint first
-        let movieResponse = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}?api_key=${
+        // ✅ FIXED: Use correct endpoint based on mediaType
+        const endpoint = mediaType === "tv" ? "tv" : "movie";
+
+        // Fetch main data
+        const movieResponse = await fetch(
+          `https://api.themoviedb.org/3/${endpoint}/${movieId}?api_key=${
             import.meta.env.VITE_TMDB_API_KEY
-          }&language=en-US`
+          }&language=en-US`,
+          { signal: controller.signal }
         );
 
-        let movieData = await movieResponse.json();
+        const movieData = await movieResponse.json();
 
-        // If movie endpoint fails (TV show), try TV endpoint
-        if (movieData.success === false) {
-          movieResponse = await fetch(
-            `https://api.themoviedb.org/3/tv/${movieId}?api_key=${
-              import.meta.env.VITE_TMDB_API_KEY
-            }&language=en-US`
-          );
-          movieData = await movieResponse.json();
-        }
-
-        // Fetch videos (works for both movies and TV)
+        // ✅ FIXED: Fetch videos with correct endpoint
         const videosResponse = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${
+          `https://api.themoviedb.org/3/${endpoint}/${movieId}/videos?api_key=${
             import.meta.env.VITE_TMDB_API_KEY
-          }&language=en-US`
+          }&language=en-US`,
+          { signal: controller.signal }
         );
         const videosData = await videosResponse.json();
 
-        // Fetch credits (works for both movies and TV)
+        // ✅ FIXED: Fetch credits with correct endpoint
         const creditsResponse = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${
+          `https://api.themoviedb.org/3/${endpoint}/${movieId}/credits?api_key=${
             import.meta.env.VITE_TMDB_API_KEY
-          }&language=en-US`
+          }&language=en-US`,
+          { signal: controller.signal }
         );
         const creditsData = await creditsResponse.json();
 
@@ -127,19 +142,27 @@ export const MovieDetails = ({ onBack, movieId }) => {
 
         const topCast = creditsData.cast?.slice(0, 12) || [];
 
-        setMovieData(movieData);
-        setTrailers(youtubeTrailers);
-        setCast(topCast);
-        setSelectedTrailer(youtubeTrailers[0] || null);
+        if (!controller.signal.aborted) {
+          setMovieData(movieData);
+          setTrailers(youtubeTrailers);
+          setCast(topCast);
+          setSelectedTrailer(youtubeTrailers[0] || null);
+        }
       } catch (error) {
-        console.error("Error fetching movie data:", error);
+        if (error.name !== "AbortError") {
+          console.error("Error fetching movie data:", error);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchMovieData();
-  }, [movieId]);
+
+    return () => controller.abort();
+  }, [movieId, mediaType]); // ✅ Added mediaType to dependencies
 
   if (loading) {
     return (
@@ -159,6 +182,14 @@ export const MovieDetails = ({ onBack, movieId }) => {
       </div>
     );
   }
+
+  // ✅ FIXED: Handle both movie and TV show data structure
+  const title = movieData.title || movieData.name;
+  const releaseDate = movieData.release_date || movieData.first_air_date;
+  const runtime =
+    movieData.runtime ||
+    (movieData.episode_run_time && movieData.episode_run_time[0]) ||
+    "N/A";
 
   return (
     <AnimatePresence mode="wait">
@@ -199,7 +230,7 @@ export const MovieDetails = ({ onBack, movieId }) => {
           <div className="movie-details-hero-content">
             <motion.img
               src={`https://image.tmdb.org/t/p/w300${movieData.poster_path}`}
-              alt={movieData.title}
+              alt={title}
               className="movie-details-poster"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -212,7 +243,7 @@ export const MovieDetails = ({ onBack, movieId }) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
-                {movieData.title}
+                {title}
               </motion.h1>
 
               <motion.div
@@ -221,9 +252,11 @@ export const MovieDetails = ({ onBack, movieId }) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
               >
-                <span>{new Date(movieData.release_date).getFullYear()}</span>
+                <span>{new Date(releaseDate).getFullYear()}</span>
                 <span>•</span>
-                <span>{movieData.runtime} min</span>
+                <span>
+                  {runtime} {mediaType === "tv" ? "min/ep" : "min"}
+                </span>
                 <span>•</span>
                 <span className="rating">
                   ⭐ {movieData.vote_average?.toFixed(1)}
@@ -289,7 +322,7 @@ export const MovieDetails = ({ onBack, movieId }) => {
           </div>
         </div>
 
-        {/* Navigation Tabs - UPDATED WITH WATCH TAB */}
+        {/* Navigation Tabs */}
         <motion.div
           className="movie-details-tabs"
           initial={{ y: 20, opacity: 0 }}
@@ -314,7 +347,6 @@ export const MovieDetails = ({ onBack, movieId }) => {
           >
             Cast
           </button>
-          {/* ✅ NEW WATCH TAB */}
           <button
             className={`tab-btn ${activeTab === "watch" ? "active" : ""}`}
             onClick={() => setActiveTab("watch")}
@@ -338,18 +370,36 @@ export const MovieDetails = ({ onBack, movieId }) => {
               <div className="movie-details-grid">
                 <div className="detail-item">
                   <strong>Release Date</strong>
-                  <span>
-                    {new Date(movieData.release_date).toLocaleDateString()}
-                  </span>
+                  <span>{new Date(releaseDate).toLocaleDateString()}</span>
                 </div>
-                <div className="detail-item">
-                  <strong>Budget</strong>
-                  <span>${movieData.budget?.toLocaleString() || "N/A"}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Revenue</strong>
-                  <span>${movieData.revenue?.toLocaleString() || "N/A"}</span>
-                </div>
+                {mediaType === "movie" && (
+                  <>
+                    <div className="detail-item">
+                      <strong>Budget</strong>
+                      <span>
+                        ${movieData.budget?.toLocaleString() || "N/A"}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <strong>Revenue</strong>
+                      <span>
+                        ${movieData.revenue?.toLocaleString() || "N/A"}
+                      </span>
+                    </div>
+                  </>
+                )}
+                {mediaType === "tv" && (
+                  <>
+                    <div className="detail-item">
+                      <strong>Seasons</strong>
+                      <span>{movieData.number_of_seasons || "N/A"}</span>
+                    </div>
+                    <div className="detail-item">
+                      <strong>Episodes</strong>
+                      <span>{movieData.number_of_episodes || "N/A"}</span>
+                    </div>
+                  </>
+                )}
                 <div className="detail-item">
                   <strong>Status</strong>
                   <span>{movieData.status}</span>
@@ -473,7 +523,6 @@ export const MovieDetails = ({ onBack, movieId }) => {
             </motion.div>
           )}
 
-          {/* ✅ NEW WATCH TAB CONTENT */}
           {activeTab === "watch" && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -482,19 +531,19 @@ export const MovieDetails = ({ onBack, movieId }) => {
               className="tab-content"
             >
               <div className="watch-section">
-                <h3>🎬 Watch Full Movie</h3>
+                <h3>🎬 Watch Full {mediaType === "tv" ? "Series" : "Movie"}</h3>
                 <p className="watch-description">
-                  Browse legally available full movies on YouTube
+                  Browse legally available full{" "}
+                  {mediaType === "tv" ? "shows" : "movies"} on YouTube
                 </p>
 
                 {loadingFullMovies ? (
                   <div className="loading-full-movies">
                     <i className="fa-solid fa-spinner fa-spin"></i>
-                    <p>Searching for available movies...</p>
+                    <p>Searching for available content...</p>
                   </div>
                 ) : fullMovies.length > 0 ? (
                   <>
-                    {/* Main Video Player */}
                     <div className="main-movie-player">
                       <div className="video-container">
                         <iframe
@@ -515,9 +564,8 @@ export const MovieDetails = ({ onBack, movieId }) => {
                       </p>
                     </div>
 
-                    {/* Movie List */}
                     <div className="movies-list">
-                      <h4>Available Movies</h4>
+                      <h4>Available Content</h4>
                       <div className="movies-grid">
                         {fullMovies.map((movie) => (
                           <div
@@ -545,14 +593,14 @@ export const MovieDetails = ({ onBack, movieId }) => {
                 ) : (
                   <div className="no-full-movies">
                     <i className="fa-solid fa-film"></i>
-                    <h4>No Full Movies Available</h4>
+                    <h4>No Full Content Available</h4>
                     <p>
-                      No legally available full movies found for this title on
-                      YouTube.
+                      No legally available full{" "}
+                      {mediaType === "tv" ? "shows" : "movies"} found for this
+                      title on YouTube.
                     </p>
                     <p className="suggestion">
-                      Try searching for "{movieData?.title}" directly on
-                      YouTube.
+                      Try searching for "{title}" directly on YouTube.
                     </p>
                   </div>
                 )}
