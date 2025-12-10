@@ -388,9 +388,10 @@ main::-webkit-scrollbar-thumb {
   .app {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 88% 10%;
+    grid-template-rows: 1fr;
+    padding-bottom: 0rem;
+    position: fixed;
     height: 100vh;
-    gap: 2%;
     overflow: hidden;
     justify-content: center;
   }
