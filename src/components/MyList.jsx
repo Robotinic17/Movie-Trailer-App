@@ -92,22 +92,55 @@ export const MyList = ({ onMovieClick }) => {
     }
   };
 
-  // Scroll to top function
+  // ✅ FIXED: Scroll to top function
   const scrollToTop = () => {
-    // Scroll the main content area (not the window)
-    const mainElement = document.querySelector("main");
-    if (mainElement) {
-      mainElement.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } else {
-      // Fallback to window scrolling
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+    // Get the mylist container itself
+    const mylistElement = document.querySelector(".mylist");
+
+    // Find the parent scrollable container
+    let scrollParent = mylistElement?.parentElement;
+
+    // Keep looking up the DOM tree for a scrollable parent
+    while (scrollParent) {
+      const hasScroll = scrollParent.scrollHeight > scrollParent.clientHeight;
+      const overflowY = window.getComputedStyle(scrollParent).overflowY;
+      const isScrollable =
+        hasScroll && (overflowY === "scroll" || overflowY === "auto");
+
+      if (isScrollable) {
+        scrollParent.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+        return;
+      }
+
+      scrollParent = scrollParent.parentElement;
     }
+
+    // If no scrollable parent found, try common containers
+    const containers = [
+      document.querySelector("main"),
+      document.querySelector(".content"),
+      document.querySelector(".account-content"),
+      document.querySelector(".favorites-page"),
+    ];
+
+    for (const container of containers) {
+      if (container && container.scrollHeight > container.clientHeight) {
+        container.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+        return;
+      }
+    }
+
+    // Last resort: window scroll
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const filters = ["All", "Movies", "TV Series", "Thrillers"];
