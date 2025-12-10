@@ -291,7 +291,7 @@
 
   .trending {
     border-radius: 20px;
-    height: 66vh;
+    height: 20rem;
     box-shadow: 0 0px 25px rgba(131, 130, 130, 0.35);
     opacity: 1;
   }
