@@ -380,7 +380,18 @@ main::-webkit-scrollbar-thumb {
 
   main {
     width: 100vw;
-
     border-radius: 20px 0 0 20px;
+    grid-row: 1;
+    height: 100%;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 88% 10%;
+    height: 100vh;
+    gap: 2%;
+    overflow: hidden;
+    justify-content: center;
   }
 }

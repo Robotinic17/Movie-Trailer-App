@@ -191,10 +191,11 @@ nav li.active i {
 
 @media (max-width: 770px) {
   .Pages-cont {
-    position: absolute;
-    bottom: 35px;
+    position: relative;
+    bottom: 0;
     height: fit-content;
-    width: 500px;
+    width: 100%;
+    grid-row: 2;
   }
 
   nav {

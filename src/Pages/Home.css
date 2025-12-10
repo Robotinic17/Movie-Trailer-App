@@ -88,8 +88,19 @@
 
   .main-sec {
     padding: 0rem;
-    padding-bottom: 2rem;
-    height: 75%;
+    padding-bottom: 1rem;
+    height: 88%;
+    background: none;
+    justify-items: center;
+    border-radius: 40px 0px 0px 40px;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-sec {
+    padding: 0rem;
+    padding-bottom: 1rem;
+    height: 85%;
     background: none;
     justify-items: center;
     border-radius: 40px 0px 0px 40px;
