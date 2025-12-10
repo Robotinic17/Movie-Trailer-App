@@ -383,6 +383,7 @@ main::-webkit-scrollbar-thumb {
     border-radius: 20px 0 0 20px;
     grid-row: 1;
     height: 100%;
+    position: fixed;
   }
 
   .app {
