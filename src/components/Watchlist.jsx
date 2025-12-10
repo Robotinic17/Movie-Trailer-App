@@ -1,5 +1,4 @@
 import "./Watchlist.css";
-import BG from "../assets/Bg.jpeg";
 import { useWatchlist } from "../context/WatchlistContext";
 
 export const Watchlist = ({ onMovieClick }) => {
