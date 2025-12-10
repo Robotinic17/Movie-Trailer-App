@@ -8,7 +8,7 @@ import { Search } from "../components/search";
 import { MovieDetails } from "../components/MovieDetails";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchFromTMDB } from "../api/tmdb";
-import "./home.css";
+import "./Home.css";
 
 export const Home = ({ activeCategory, setActiveCategory, user }) => {
   const [trendingData, setTrendingData] = useState([]);
