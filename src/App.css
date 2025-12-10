@@ -199,10 +199,16 @@ body::before {
   width: inherit;
   height: inherit;
   z-index: 0;
+  backdrop-filter: blur(30px);
+  position: fixed;
 }
 
 body::after {
   content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-dark);
+  z-index: 0;
 }
 
 .app {
