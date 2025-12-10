@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { useNavigate, Link } from "react-router-dom";
-import "./Auth2.css";
+import "./auth2.css";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
