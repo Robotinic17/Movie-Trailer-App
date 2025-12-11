@@ -822,3 +822,9 @@ li.active {
     width: 350px;
   }
 }
+
+@media (max-width: 380px) {
+  .search-bar {
+    width: 290px;
+  }
+}
