@@ -193,9 +193,9 @@ nav li.active i {
   .Pages-cont {
     position: relative;
     bottom: 0;
-    height: fit-content;
+    height: 50px;
     width: 100%;
-    top: -3rem;
+    top: 0rem;
     grid-row: 2;
   }
 

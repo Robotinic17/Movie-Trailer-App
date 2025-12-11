@@ -183,6 +183,7 @@ body {
   background-image: url("/src/assets/ghost.jpg"); /* Default background */
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
   background-position: center;
   color: var(--text-primary);
   min-height: 100vh;
@@ -391,7 +392,7 @@ main::-webkit-scrollbar-thumb {
     grid-template-rows: 1fr;
     padding-bottom: 0rem;
     position: fixed;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     justify-content: center;
   }
