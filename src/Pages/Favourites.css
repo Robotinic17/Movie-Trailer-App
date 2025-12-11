@@ -85,12 +85,8 @@
 
 @media (max-width: 500px) {
   .main-sec-1 {
-    height: 75%;
-    padding: 0rem 0.5rem;
-  }
-  .main-sec-1 {
-    height: 85%;
-    padding: 0rem 0.5rem;
-    border-radius: 0;
+    height: 100%;
+    border-radius: 15px 0px 0px 15px;
+    padding: 0rem 0.5rem 5rem 0.5rem;
   }
 }

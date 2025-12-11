@@ -286,7 +286,7 @@
 }
 @media (max-width: 500px) {
   .loading-spin {
-    height: 63vh;
+    height: 20rem;
   }
 
   .trending {
