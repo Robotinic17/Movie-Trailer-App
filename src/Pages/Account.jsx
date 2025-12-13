@@ -25,7 +25,7 @@ export const Account = () => {
 
   // ✅ ADULT CONTENT PREFERENCES STATE
   const [userPreferences, setUserPreferences] = useState({
-    adultContent: false, // Default to false for safety
+    adultContent: false,
     autoplayTrailers: true,
   });
 
@@ -57,168 +57,108 @@ export const Account = () => {
 
   const { watchlist, clearWatchlist } = useWatchlist();
   const { favorites, clearFavorites } = useFavorites();
-  // AGE VERIFICATION
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [pendingAdultContent, setPendingAdultContent] = useState(false);
 
-  // UPDATE ADULT CONTENT PREFERENCE
   const updateAdultContentPreference = (allowAdult) => {
     const newPreferences = {
       ...userPreferences,
       adultContent: allowAdult,
     };
-
     setUserPreferences(newPreferences);
-
-    // Save to localStorage (user-specific)
     if (user) {
       localStorage.setItem(
         `userPreferences_${user.uid}`,
         JSON.stringify(newPreferences)
       );
     }
-
     showToast(allowAdult ? "Adult content enabled" : "Adult content disabled");
   };
-  // AGE VERIFICATION HANDLER
+
   const handleAdultContentToggle = (allowAdult) => {
     if (allowAdult && !userPreferences.adultContent) {
-      // Show age verification modal when turning ON
       setPendingAdultContent(true);
       setShowAgeVerification(true);
     } else {
-      // Directly turn OFF without verification
       updateAdultContentPreference(false);
     }
   };
-  // Add this function to remove duplicate movies
+
   const removeDuplicateMovies = (movies) => {
     const seen = new Set();
     return movies.filter((movie) => {
-      if (seen.has(movie.id)) {
-        return false;
-      }
+      if (seen.has(movie.id)) return false;
       seen.add(movie.id);
       return true;
     });
   };
 
   const themes = [
-    {
-      id: "light",
-      name: "Light Mode",
-      type: "mode",
-      accent: "#fff",
-      bg: "light-bg.jpg",
-    },
-    {
-      id: "dark",
-      name: "Dark Mode",
-      type: "mode",
-      accent: "#000",
-      bg: "dark-bg.jpg",
-    },
-    {
-      id: "blue",
-      name: "Ocean Blue",
-      type: "color",
-      accent: "#3b82f6",
-      bg: "blue-bg.jpg",
-    },
-    {
-      id: "green",
-      name: "Forest Green",
-      type: "color",
-      accent: "#10b981",
-      bg: "green-bg.jpg",
-    },
-    {
-      id: "purple",
-      name: "Royal Purple",
-      type: "color",
-      accent: "#8b5cf6",
-      bg: "purple-bg.jpg",
-    },
-    {
-      id: "orange",
-      name: "Sunset Orange",
-      type: "color",
-      accent: "#f59e0b",
-      bg: "orange-bg.jpg",
-    },
-    {
-      id: "pink",
-      name: "Blush Pink",
-      type: "color",
-      accent: "#ec4899",
-      bg: "pink-bg.jpg",
-    },
-    {
-      id: "red",
-      name: "Crimson Red",
-      type: "color",
-      accent: "#ef4444",
-      bg: "red-bg.jpg",
-    },
+    { id: "light", name: "Light Mode", type: "mode", accent: "#fff" },
+    { id: "dark", name: "Dark Mode", type: "mode", accent: "#000" },
+    { id: "blue", name: "Ocean Blue", type: "color", accent: "#3b82f6" },
+    { id: "green", name: "Forest Green", type: "color", accent: "#10b981" },
+    { id: "purple", name: "Royal Purple", type: "color", accent: "#8b5cf6" },
+    { id: "orange", name: "Sunset Orange", type: "color", accent: "#f59e0b" },
+    { id: "pink", name: "Blush Pink", type: "color", accent: "#ec4899" },
+    { id: "red", name: "Crimson Red", type: "color", accent: "#ef4444" },
   ];
 
-  // Convert file to base64 for local storage
-  const convertToBase64 = (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-    });
+  // ✅ Upload to Cloudinary
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+        }/image/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload failed:", error);
+      throw error;
+    }
   };
 
-  // Get profile photo - USER-SPECIFIC STORAGE
   const getProfilePhoto = () => {
     if (!user) return BG;
-
-    // 🆕 User-specific storage key
-    const userKey = `userProfilePhoto_${user.uid}`;
-    const localPhoto = localStorage.getItem(userKey);
-
-    // Priority: 1. Local cached, 2. Firebase, 3. Default
-    if (localPhoto) return localPhoto;
-    if (user?.photoURL) {
-      // Cache Firebase photo locally
-      localStorage.setItem(userKey, user.photoURL);
-      return user.photoURL;
-    }
-
+    if (user?.photoURL) return user.photoURL;
     return BG;
   };
 
-  // Show toast message
   const showToast = (message) => {
     setToast({ show: true, message });
     setTimeout(() => setToast({ show: false, message: "" }), 3000);
   };
 
-  // Get recent movies (last 4 from watchlist)
+  const handleMovieClick = (movieId) => {
+    setSelectedMovieId(movieId);
+    setIsMovieDetailsActive(true);
+  };
+
+  const handleBackFromMovieDetails = () => {
+    setIsMovieDetailsActive(false);
+    setSelectedMovieId(null);
+  };
+
   const recentMovies = watchlist.slice(-4).reverse();
 
-  // Get current user from Firebase auth
   useEffect(() => {
     const currentUser = auth.currentUser;
     setUser(currentUser);
-
-    if (currentUser?.photoURL) {
-      const localPhoto = localStorage.getItem("userProfilePhoto");
-      // Only save if Firebase has photo AND localStorage doesn't have it
-      if (!localPhoto) {
-        localStorage.setItem("userProfilePhoto", currentUser.photoURL);
-      }
-    }
-
     const savedTheme = localStorage.getItem("movieApp-theme") || "light";
     setCurrentTheme(savedTheme);
     applyTheme(savedTheme);
-
     fetchTrendingMovies();
-
-    // ✅ Load adult content preferences
     const savedPreferences = localStorage.getItem(
       `userPreferences_${currentUser?.uid}`
     );
@@ -264,15 +204,9 @@ export const Account = () => {
       (movie, index, self) =>
         index === self.findIndex((m) => m.movieId === movie.movieId)
     );
-
     const totalWatched = allItems.length;
     const totalWatchTime = Math.round(totalWatched * 2);
-
-    setUserStats({
-      totalWatched,
-      totalWatchTime,
-      favoriteGenre: "Action",
-    });
+    setUserStats({ totalWatched, totalWatchTime, favoriteGenre: "Action" });
     setLoading(false);
   };
 
@@ -285,39 +219,11 @@ export const Account = () => {
     }
   };
 
-  // Reauthenticate user for sensitive operations
   const reauthenticateUser = async (password) => {
     const credential = EmailAuthProvider.credential(user.email, password);
     await reauthenticateWithCredential(user, credential);
   };
 
-  // Upload profile photo to Firebase Storage (BACKGROUND SYNC)
-  const uploadProfilePhoto = async (file) => {
-    try {
-      const storageRef = ref(storage, `profilePhotos/${user.uid}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-      throw error;
-    }
-  };
-
-  // Background Firebase sync - user doesn't wait for this
-  const syncPhotoToFirebase = async (file) => {
-    try {
-      const storageRef = ref(storage, `profilePhotos/${user.uid}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-
-      await updateProfile(auth.currentUser, { photoURL: downloadURL });
-
-      localStorage.setItem("userProfilePhoto", downloadURL);
-    } catch (error) {}
-  };
-
-  // DANGER ZONE FUNCTIONS
   const handleDangerAction = (action) => {
     setConfirmAction(action);
   };
@@ -346,16 +252,10 @@ export const Account = () => {
 
   const deleteAllUserData = async () => {
     try {
-      // Clear from Firestore via context functions - ADD AWAIT
       if (clearWatchlist) await clearWatchlist();
       if (clearFavorites) await clearFavorites();
-
-      // Clear local profile photo
       localStorage.removeItem("userProfilePhoto");
-
       showToast("All your data has been cleared! 🗑️");
-
-      // Refresh stats to show 0
       setUserStats({
         totalWatched: 0,
         totalWatchTime: 0,
@@ -395,7 +295,7 @@ export const Account = () => {
     return user?.email || "guest@example.com";
   };
 
-  // Modal Component
+  // ✅ MODAL COMPONENT (FIXED)
   const renderModal = () => {
     if (!activeModal) return null;
 
@@ -415,21 +315,17 @@ export const Account = () => {
       try {
         switch (activeModal) {
           case "username":
-            if (!newUsername.trim()) {
+            if (!newUsername.trim())
               throw new Error("Username cannot be empty");
-            }
             await updateProfile(auth.currentUser, { displayName: newUsername });
             setUser({ ...user, displayName: newUsername });
             showToast("Username updated successfully! 🎉");
             break;
 
           case "email":
-            if (!newEmail.trim()) {
-              throw new Error("Email cannot be empty");
-            }
-            if (!currentPassword) {
+            if (!newEmail.trim()) throw new Error("Email cannot be empty");
+            if (!currentPassword)
               throw new Error("Please enter your current password");
-            }
             await reauthenticateUser(currentPassword);
             await updateEmail(auth.currentUser, newEmail);
             setUser({ ...user, email: newEmail });
@@ -437,15 +333,12 @@ export const Account = () => {
             break;
 
           case "password":
-            if (!newPassword || !confirmPassword) {
+            if (!newPassword || !confirmPassword)
               throw new Error("Please fill in all password fields");
-            }
-            if (newPassword !== confirmPassword) {
+            if (newPassword !== confirmPassword)
               throw new Error("Passwords don't match");
-            }
-            if (!currentPassword) {
+            if (!currentPassword)
               throw new Error("Please enter your current password");
-            }
             await reauthenticateUser(currentPassword);
             await updatePassword(auth.currentUser, newPassword);
             showToast("Password updated successfully! 🔐");
@@ -453,18 +346,13 @@ export const Account = () => {
 
           case "photo":
             if (profilePhoto) {
-              try {
-                // 🚀 INSTANT LOCAL UPDATE (No Firebase - No costs!)
-                const base64Photo = await convertToBase64(profilePhoto);
-                const userKey = `userProfilePhoto_${user.uid}`;
-                localStorage.setItem(userKey, base64Photo);
-                setUser({ ...user, photoURL: base64Photo });
-
-                showToast("Profile photo saved! 📸");
-              } catch (error) {
-                console.error("Photo update failed:", error);
-                showToast("Error updating photo 😔");
-              }
+              showToast("Uploading photo...");
+              const cloudinaryUrl = await uploadToCloudinary(profilePhoto);
+              await updateProfile(auth.currentUser, {
+                photoURL: cloudinaryUrl,
+              });
+              setUser({ ...user, photoURL: cloudinaryUrl });
+              showToast("Profile photo updated! 📸");
             }
             break;
         }
@@ -523,7 +411,6 @@ export const Account = () => {
           </div>
 
           <div className="modal-body">
-            {/* Username Modal */}
             {activeModal === "username" && (
               <div className="input-group">
                 <label>New Username</label>
@@ -536,7 +423,6 @@ export const Account = () => {
               </div>
             )}
 
-            {/* Email Modal */}
             {activeModal === "email" && (
               <>
                 <div className="input-group">
@@ -560,7 +446,6 @@ export const Account = () => {
               </>
             )}
 
-            {/* Password Modal */}
             {activeModal === "password" && (
               <>
                 <div className="input-group">
@@ -593,7 +478,6 @@ export const Account = () => {
               </>
             )}
 
-            {/* Profile Photo Modal */}
             {activeModal === "photo" && (
               <div className="input-group">
                 <label>Upload Profile Photo</label>
@@ -755,7 +639,7 @@ export const Account = () => {
     );
   };
 
-  // ✅ AGE VERIFICATION MODAL
+  // Age Verification Modal
   const renderAgeVerificationModal = () => {
     if (!showAgeVerification) return null;
 
@@ -838,14 +722,7 @@ export const Account = () => {
   };
 
   return (
-    <motion.div
-      style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-      }}
-    >
-      {/* ✅ HEADER STAYS VISIBLE ALWAYS */}
+    <motion.div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <motion.div className="acct-header">
         <motion.p className="logo">My Account</motion.p>
         <motion.div
@@ -859,7 +736,6 @@ export const Account = () => {
         </motion.div>
       </motion.div>
 
-      {/* ✅ MOVIE DETAILS OVERLAY - ONLY REPLACES MAIN CONTENT, NOT HEADER */}
       <AnimatePresence mode="wait">
         {isMovieDetailsActive ? (
           <MovieDetails
@@ -867,9 +743,7 @@ export const Account = () => {
             movieId={selectedMovieId}
           />
         ) : (
-          // ✅ MAIN ACCOUNT CONTENT (HEADER STAYS ABOVE THIS)
           <motion.div className="acct-content">
-            {/* Toast Notification */}
             {toast.show && (
               <motion.div
                 className="toast"
@@ -880,8 +754,8 @@ export const Account = () => {
                 {toast.message}
               </motion.div>
             )}
+
             <section className="main-sec-2">
-              {/* Account Billboard - NOW WITH HYBRID PHOTO SYSTEM */}
               <div className="account-billboard">
                 <div className="account-info">
                   <img
@@ -902,7 +776,6 @@ export const Account = () => {
                 </div>
               </div>
 
-              {/* QUICK STATS SECTION */}
               <div className="quick-stats">
                 <div className="stat-card">
                   <div className="stat-icon">
@@ -913,7 +786,6 @@ export const Account = () => {
                     <p>Movies & Shows Saved</p>
                   </div>
                 </div>
-
                 <div className="stat-card">
                   <div className="stat-icon">
                     <i className="fa-solid fa-clock"></i>
@@ -923,7 +795,6 @@ export const Account = () => {
                     <p>Estimated Watch Time</p>
                   </div>
                 </div>
-
                 <div className="stat-card">
                   <div className="stat-icon">
                     <i className="fa-solid fa-heart"></i>
@@ -935,10 +806,8 @@ export const Account = () => {
                 </div>
               </div>
 
-              {/* PREFERENCES PANEL - UPDATED WITH ADULT CONTENT TOGGLE */}
               <div className="preferences-panel">
                 <h2>Preferences</h2>
-
                 <div className="preference-group">
                   <h3>Theme</h3>
                   <div className="theme-options">
@@ -977,7 +846,6 @@ export const Account = () => {
                   </label>
                 </div>
 
-                {/* 🔥 UPDATED: Adult Content Toggle with Age Verification */}
                 <div className="preference-group">
                   <h3>Content Preferences</h3>
                   <label className="switch-option">
@@ -996,7 +864,6 @@ export const Account = () => {
                 </div>
               </div>
 
-              {/* RECENTLY SAVED SECTION - ✅ FIXED MOVIE CLICKS */}
               <div className="recently-watched">
                 <div className="watchlist-title-bar">
                   <h2>Recently Saved</h2>
@@ -1035,7 +902,7 @@ export const Account = () => {
                         className="watched-item"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleMovieClick(movie.movieId)} // ✅ FIXED
+                        onClick={() => handleMovieClick(movie.movieId)}
                         style={{ cursor: "pointer" }}
                       >
                         <img
@@ -1069,7 +936,6 @@ export const Account = () => {
                 )}
               </div>
 
-              {/* HOT TAKES FOR YOU SECTION - ✅ FIXED MOVIE CLICKS */}
               <div className="hot-takes">
                 <div className="watchlist-title-bar">
                   <h2>Hot Takes For You 🔥</h2>
@@ -1088,7 +954,7 @@ export const Account = () => {
                         className="watched-item"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleMovieClick(movie.id)} // ✅ FIXED
+                        onClick={() => handleMovieClick(movie.id)}
                         style={{ cursor: "pointer" }}
                       >
                         <img
@@ -1118,7 +984,6 @@ export const Account = () => {
                 )}
               </div>
 
-              {/* ACCOUNT SECURITY SECTION */}
               <div className="security-settings" id="security">
                 <div className="security-header">
                   <h2>Account Security</h2>
@@ -1126,7 +991,6 @@ export const Account = () => {
                 </div>
 
                 <div className="security-options">
-                  {/* Profile Photo */}
                   <div className="security-item">
                     <div className="security-info">
                       <h4>Profile Photo</h4>
@@ -1140,7 +1004,6 @@ export const Account = () => {
                     </button>
                   </div>
 
-                  {/* Username */}
                   <div className="security-item">
                     <div className="security-info">
                       <h4>Change Username</h4>
@@ -1154,7 +1017,6 @@ export const Account = () => {
                     </button>
                   </div>
 
-                  {/* Email */}
                   <div className="security-item">
                     <div className="security-info">
                       <h4>Change Email</h4>
@@ -1168,7 +1030,6 @@ export const Account = () => {
                     </button>
                   </div>
 
-                  {/* Password */}
                   <div className="security-item">
                     <div className="security-info">
                       <h4>Change Password</h4>
@@ -1184,7 +1045,6 @@ export const Account = () => {
                 </div>
               </div>
 
-              {/* DANGER ZONE */}
               <div className="danger-zone">
                 <div className="danger-header">
                   <h2>Danger Zone</h2>
@@ -1242,6 +1102,7 @@ export const Account = () => {
                 </div>
               </div>
             </section>
+
             {renderAgeVerificationModal()}
             {renderModal()}
             {renderConfirmationModal()}
