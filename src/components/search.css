@@ -404,6 +404,10 @@
     font-size: 1rem;
   }
 
+  .search-page {
+    height: 100%;
+  }
+
   .search-movie-info p {
     font-size: 0.8rem;
   }
